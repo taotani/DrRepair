@@ -112,7 +112,7 @@ class Experiment(object):
         config = self.config
         latest_step = self.outputter.get_latest_step()
 
-        train_iter, train_batch = self.next_train_batch(None)
+        train_iter, train_batch = self.next_train_iter_batch(None)
         train_stats = Stats()
 
         if latest_step == 0:
