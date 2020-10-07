@@ -119,10 +119,13 @@ class Experiment(object):
             # Initial save
             self.outputter.save_model(self.meta.step, self.model, self.meta)    
         else:
+            print("restoring ...")
             self.load_metadata(str(latest_step))
             self.load_model(str(latest_step))
             for i in range(latest_step):
                 next(train_iter)
+            print("restored")
+            
 
         max_steps = config.timing.max_steps
         progress_bar = tqdm(total=max_steps, desc='TRAIN', mininterval=20)
