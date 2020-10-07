@@ -11,6 +11,7 @@ from repairer.data import create_dataset
 from repairer.metadata import Metadata
 from repairer.model import create_model
 from repairer.utils import Stats, try_gpu
+import itertools
 
 import socket
 print(socket.gethostname())
@@ -126,9 +127,10 @@ class Experiment(object):
             print("restoring ...")
             self.load_metadata(str(latest_step))
             self.load_model(str(latest_step))
-            for i in range(latest_step):
-                next(train_iter)
-            print("restored")
+            print("done")
+            print("forwarding the iterator ...")
+            train_iter = next(itertools.islice(train_iter, latest_step, latest_step), None)
+            print("done")
             
 
         max_steps = config.timing.max_steps
