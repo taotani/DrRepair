@@ -63,8 +63,12 @@ class Experiment(object):
         if force_cpu:
             state_dict = torch.load(self.outputter.get_path(prefix + '.model'), map_location='cpu')
         else:
+            print("loading model ...")
             state_dict = torch.load(self.outputter.get_path(prefix + '.model'))
+            print("done")
+        print("loading state_dict ...")
         self.model.load_state_dict(state_dict)
+        print("done")
 
     def load_model_add_text(self, prefix):
         print('Loading model from {}.model (add_text)'.format(prefix))
