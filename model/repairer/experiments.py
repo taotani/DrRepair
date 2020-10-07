@@ -56,14 +56,14 @@ class Experiment(object):
 
     def load_metadata(self, prefix):
         print('Loading metadata from {}.meta'.format(prefix))
-        self.meta.load(prefix + '.meta')
+        self.meta.load(self.outputter.get_path(prefix + '.meta'))
 
     def load_model(self, prefix, force_cpu=False):
         print('Loading model from {}.model'.format(prefix))
         if force_cpu:
-            state_dict = torch.load(prefix + '.model', map_location='cpu')
+            state_dict = torch.load(self.outputter.get_path(prefix + '.model'), map_location='cpu')
         else:
-            state_dict = torch.load(prefix + '.model')
+            state_dict = torch.load(self.outputter.get_path(prefix + '.model'))
         self.model.load_state_dict(state_dict)
 
     def load_model_add_text(self, prefix):
