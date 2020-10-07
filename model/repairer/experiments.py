@@ -119,8 +119,8 @@ class Experiment(object):
             # Initial save
             self.outputter.save_model(self.meta.step, self.model, self.meta)    
         else:
-            self.load_metadata(latest_step)
-            self.load_model(latest_step)
+            self.load_metadata(str(latest_step))
+            self.load_model(str(latest_step))
             for i in range(latest_step):
                 next(train_iter)
 
