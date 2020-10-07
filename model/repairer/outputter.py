@@ -1,6 +1,7 @@
 # Outputter manages the outdir directory
 import os
 import logging
+import glob
 
 try:
     from tensorboardX import SummaryWriter
@@ -68,6 +69,10 @@ class Outputter(object):
 
     def get_path(self, filename):
         return os.path.join(self.outdir, filename)
+
+    def get_latest_step(self):
+        models = glob.glob(f"{self.outdir}/*.model")
+        return max([int(os.path.splitext(os.path.basename(m))) for m in glob.glob(f"{self.outdir}/*.model")],default=0)
 
     def save_model(self, step, model, meta):
         print('Saving model to checkpoint {}'.format(step))

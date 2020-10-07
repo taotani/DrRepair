@@ -99,29 +99,40 @@ class Experiment(object):
     ################################
     # Train loop
 
+    def next_train_iter_batch(self, train_iter):
+        train_batch = None if train_iter is None else next(train_iter, None)
+        if train_batch is None:
+            self.dataset.init_iter('train')
+            train_iter = self.dataset.get_iter('train')
+            train_batch = next(train_iter)
+            assert train_batch is not None, 'No training data'
+        return train_iter, train_batch
+
     def train(self):
         config = self.config
+        latest_step = self.outputter.get_latest_step()
 
-        # Initial save
-        self.outputter.save_model(self.meta.step, self.model, self.meta)
+        train_iter, train_batch = self.next_train_batch(None)
+        train_stats = Stats()
+
+        if latest_step == 0:
+            # Initial save
+            self.outputter.save_model(self.meta.step, self.model, self.meta)    
+        else:
+            self.load_metadata(latest_step)
+            self.load_model(latest_step)
+            for i in range(latest_step):
+                next(train_iter)
 
         max_steps = config.timing.max_steps
         progress_bar = tqdm(total=max_steps, desc='TRAIN', mininterval=20)
         progress_bar.update(self.meta.step)
 
-        train_iter = None
-        train_stats = Stats()
-
         while self.meta.step < max_steps:
             self.meta.step += 1
             progress_bar.update()
 
-            train_batch = None if train_iter is None else next(train_iter, None)
-            if train_batch is None:
-                self.dataset.init_iter('train')
-                train_iter = self.dataset.get_iter('train')
-                train_batch = next(train_iter)
-                assert train_batch is not None, 'No training data'
+            train_iter, train_batch = self.next_train_iter_batch(train_iter)
 
             stats = self.process_batch(train_batch, train=True)
             train_stats.add(stats)
