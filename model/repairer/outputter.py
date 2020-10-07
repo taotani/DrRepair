@@ -72,7 +72,7 @@ class Outputter(object):
 
     def get_latest_step(self):
         models = glob.glob(f"{self.outdir}/*.model")
-        model_nums = list([os.path.splitext(os.path.basename(m)) for m in glob.glob(f"{self.outdir}/*.model")])
+        model_nums = list([os.path.splitext(os.path.basename(m))[0] for m in glob.glob(f"{self.outdir}/*.model")])
         print(model_nums)
         return max([int(n) for n in model_nums],default=0)
 
