@@ -7,20 +7,20 @@ data:
   splits:
     train:
       format: substitute
-      paths: [/root/data/err-data-compiler--auto-corrupt--orig-deepfix/bin0/*/*,
-              /root/data/err-data-compiler--auto-corrupt--orig-deepfix/bin1/*/*,
-              /root/data/err-data-compiler--auto-corrupt--orig-deepfix/bin2/*/*,
-              /root/data/err-data-compiler--auto-corrupt--orig-deepfix/bin3/*/*,
-              /root/data/err-data-compiler--auto-corrupt--codeforce--deepfix-style/*/*.json]
+      paths: [../data/err-data-compiler--auto-corrupt--orig-deepfix/bin0/*/*,
+              ../data/err-data-compiler--auto-corrupt--orig-deepfix/bin1/*/*,
+              ../data/err-data-compiler--auto-corrupt--orig-deepfix/bin2/*/*,
+              ../data/err-data-compiler--auto-corrupt--orig-deepfix/bin3/*/*,
+              ../data/err-data-compiler--auto-corrupt--codeforce--deepfix-style/*/*.json]
       shuffle: true
     dev:
       format: vanilla
-      path: /root/data/err-dev-compiler--for-deepfix/err-dev.2000.jsonl
+      path: ../data/err-dev-compiler--for-deepfix/err-dev.2000.jsonl
     test:
       format: vanilla
-      path: /root/data/err-dev-compiler--for-deepfix/err-dev.2000.jsonl
+      path: ../data/err-dev-compiler--for-deepfix/err-dev.2000.jsonl
   vocab:
-    path: /root/data/err-vocab-compiler--for-deepfix/combined.vocab
+    path: ../data/err-vocab-compiler--for-deepfix/combined.vocab
     min_freq: 2
 
 train:
