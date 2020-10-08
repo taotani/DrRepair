@@ -104,6 +104,22 @@ class Experiment(object):
     ################################
     # Train loop
 
+    def evaluate(self, config):
+        # Evaluate
+        if self.meta.step % config.timing.eval_freq == 0:
+            print("Evaluating ...")
+            dev_stats = Stats()
+            self.dataset.init_iter('dev')
+            fout_filename = 'pred.dev.{}'.format(self.meta.step)
+            fout = open(self.outputter.get_path(fout_filename), 'w')
+            for dev_batch in tqdm(self.dataset.get_iter('dev'), desc='DEV', mininterval=60):
+                stats = self.process_batch(dev_batch, train=False, fout=fout)
+                dev_stats.add(stats)
+            if fout: fout.close()
+            print('DEV @ {}: {}'.format(self.meta.step, dev_stats))
+            dev_stats.log(self.outputter.tb_logger, self.meta.step, 'pn_dev_')
+            print("Done")
+
     def next_train_iter_batch(self, train_iter):
         train_batch = None if train_iter is None else next(train_iter, None)
         if train_batch is None:
@@ -117,7 +133,7 @@ class Experiment(object):
         config = self.config
         latest_step = self.outputter.get_latest_step()
 
-        train_iter, train_batch = self.next_train_iter_batch(None)
+        train_iter = None
         train_stats = Stats()
 
         if latest_step == 0:
@@ -129,8 +145,9 @@ class Experiment(object):
             self.load_model(str(latest_step))
             print("done")
             print("forwarding the iterator ...")
-            train_iter = next(itertools.islice(train_iter, latest_step, latest_step), None)
+            train_iter = next(itertools.islice(self.next_train_iter_batch(None)[0], latest_step, latest_step), None)
             print("done")
+            self.evaluate(config)
             
 
         max_steps = config.timing.max_steps
@@ -155,19 +172,11 @@ class Experiment(object):
             # Save the model
             if self.meta.step % config.timing.save_freq == 0 or self.meta.step == max_steps-1:
                 self.outputter.save_model(self.meta.step, self.model, self.meta)
-
+            
             # Evaluate
-            if self.meta.step % config.timing.eval_freq == 0:
-                dev_stats = Stats()
-                self.dataset.init_iter('dev')
-                fout_filename = 'pred.dev.{}'.format(self.meta.step)
-                fout = open(self.outputter.get_path(fout_filename), 'w')
-                for dev_batch in tqdm(self.dataset.get_iter('dev'), desc='DEV', mininterval=60):
-                    stats = self.process_batch(dev_batch, train=False, fout=fout)
-                    dev_stats.add(stats)
-                if fout: fout.close()
-                print('DEV @ {}: {}'.format(self.meta.step, dev_stats))
-                dev_stats.log(self.outputter.tb_logger, self.meta.step, 'pn_dev_')
+            self.evaluate(config)
+
+            
 
         progress_bar.close()
 

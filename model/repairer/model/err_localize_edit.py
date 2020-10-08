@@ -974,7 +974,7 @@ class ErrLocalizeEditModel(Model):
                 if beam.done:
                     break
 
-            select_indices = beam.current_origin
+            select_indices = beam.current_origin.type(torch.cuda.LongTensor)
 
             if any_beam_is_finished:
                 # Reorder states.
@@ -1258,7 +1258,7 @@ class ErrLocalizeEditModel(Model):
             if isinstance(dec_output, tuple): #get result from beam search
                 allHyp, allScores = dec_output
                 if not retAllHyp:
-                    return [torch.tensor(hyps[0]) for hyps in allHyp] #hyps[0]: list of w_id
+                    return [hyps[0].clone().detach() for hyps in allHyp] #hyps[0]: list of w_id
                 else:
                     return [allHyp, allScores]
             else: #greedy decode

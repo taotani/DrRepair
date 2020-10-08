@@ -19,6 +19,3 @@ data:
   vocab:
     path: ../data/err-vocab-compiler--for-deepfix/combined.vocab
     min_freq: 2
-
-train:
-  batch_size: 20
