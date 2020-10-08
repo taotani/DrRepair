@@ -10,6 +10,8 @@ from torch.nn.utils.rnn import (
     pack_padded_sequence,
     pad_packed_sequence,
 )
+import torch_xla
+import torch_xla.core.xla_model as xm
 from repairer.utils import prepare_rnn_seq, recover_rnn_seq
 
 
@@ -953,7 +955,7 @@ class ErrLocalizeEditModel(Model):
             min_length=0,
             ratio=0,
             max_length=max_length,
-            mb_device="cuda",
+            mb_device=xm.xla_device(),
             return_attention=False,
             stepwise_penalty=False,
             block_ngram_repeat=0,
