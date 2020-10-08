@@ -305,7 +305,7 @@ class SubstituteErrData(object):
                         self.uniqueid_to_avoid[_uniqueid] += 1
 
         ## To avoid big file
-        _big_files_info_path = "../data/programs_with_line_of_length_over_80toks.txt"
+        _big_files_info_path = config.big_files
         self.uniqueid_big_file = defaultdict(int)
         with open(_big_files_info_path) as in_f:
             lines = in_f.readlines()
