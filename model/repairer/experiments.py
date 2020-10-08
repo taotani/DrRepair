@@ -145,8 +145,8 @@ class Experiment(object):
             self.load_model(str(latest_step))
             print("done")
             print("forwarding the iterator ...")
-            skip_steps = latest_step-1
-            train_iter = next(itertools.islice(self.next_train_iter_batch(None)[0], skip_steps, skip_steps), None)
+            train_iter = self.next_train_iter_batch(None)[0]
+            next(itertools.islice(train_iter, latest_step, latest_step), None)
             print("done")
             self.evaluate(config)
             
