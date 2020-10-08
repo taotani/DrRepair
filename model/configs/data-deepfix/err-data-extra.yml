@@ -1,5 +1,5 @@
 timing:
-  max_steps: 400000
+  max_steps: 150000
 
 data:
   name: deepfix-style
