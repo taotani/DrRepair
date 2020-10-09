@@ -57,15 +57,15 @@ class Experiment(object):
 
     def load_metadata(self, prefix):
         print('Loading metadata from {}.meta'.format(prefix))
-        self.meta.load(self.outputter.get_path(prefix + '.meta'))
+        self.meta.load(prefix + '.meta')
 
     def load_model(self, prefix, force_cpu=False):
         print('Loading model from {}.model'.format(prefix))
         if force_cpu:
-            state_dict = torch.load(self.outputter.get_path(prefix + '.model'), map_location='cpu')
+            state_dict = torch.load(prefix + '.model', map_location='cpu')
         else:
             print("loading model ...")
-            state_dict = torch.load(self.outputter.get_path(prefix + '.model'))
+            state_dict = torch.load(prefix + '.model')
             print("done")
         print("loading state_dict ...")
         self.model.load_state_dict(state_dict)
@@ -141,8 +141,9 @@ class Experiment(object):
             self.outputter.save_model(self.meta.step, self.model, self.meta)    
         else:
             print("restoring ...")
-            self.load_metadata(str(latest_step))
-            self.load_model(str(latest_step))
+            restore_prefix = self.outputter.get_path(str(latest_step))
+            self.load_metadata(restore_prefix)
+            self.load_model(restore_prefix)
             print("done")
             print("forwarding the iterator ...")
             train_iter = self.next_train_iter_batch(None)[0]
