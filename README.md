@@ -24,6 +24,10 @@ This repo provides the source code & data of our paper: [Graph-based, Self-Super
       conda config --add channels conda-forge
       conda install python-clang==8.0.1
       ```
+If you use pip, you can install the required libraries as follows
+```
+pipenv install torch numpy tqdm regex joblib pyyaml bottle cheroot tensorboardX clang==8.0.1
+```
 
 ## Data
 Download all the raw data -- DeepFix, SPoC, codeforce (for pretraining) -- by
